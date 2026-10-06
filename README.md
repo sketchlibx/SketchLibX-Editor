@@ -168,10 +168,10 @@ The search engine is kept in `com.sketchlibx.editor.util.EditorSearch`, so appli
 
 The project uses:
 
-- Android Gradle Plugin `9.4.0`
+- Android Gradle Plugin `8.7.3`
 - Gradle `9.6`
 - Java/JDK `17`
-- `compileSdk 37`
+- `compileSdk 35`
 - `minSdk 21`
 
 Android 17 is API level 37, and AGP 9.4 supports compiling against API 37. The Sora Editor project itself requires JDK 17+ and Java 17 source/target compatibility.
