@@ -43,9 +43,9 @@ dependencies {
     api 'io.github.rosemoe:editor'
     implementation 'io.github.rosemoe:language-textmate'
 
-    // 1.7.1 keeps API 21 compatibility for consumers.
+    // Keep the public dependency graph API-21 compatible. Fragment 1.9.x requires API 23.
     api 'androidx.appcompat:appcompat:1.7.1'
-    api 'androidx.fragment:fragment:1.9.1'
+    api 'androidx.fragment:fragment:1.8.9'
     testImplementation 'junit:junit:4.13.2'
 }
 

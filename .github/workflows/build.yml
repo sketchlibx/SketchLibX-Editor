@@ -23,11 +23,7 @@ jobs:
           cache: gradle
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v4
-        with:
-          # Do not request the deprecated `tools` SDK package.
-          # The current setup-android action provides sdkmanager via cmdline-tools.
-          packages: 'platform-tools'
+        uses: android-actions/setup-android@v4.0.2
 
       - name: Install Android SDK 36
         run: |

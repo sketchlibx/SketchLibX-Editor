@@ -1,10 +1,15 @@
-# JitPack builds directly from GitHub tags and branch snapshots.
-# This workflow file is intentionally informational; it does not publish releases.
-#
-# Stable version:
-#   Tag the repository, for example: v0.0.6
-#
-# Development snapshot:
-#   Use main-SNAPSHOT from JitPack while developing.
-#
-# See README.md and jitpack.yml for the repository's build configuration.
+name: JitPack Info
+
+# Informational workflow file. JitPack itself performs the artifact build/publish.
+# Stable builds use Git tags such as v0.0.6. Development builds can use main-SNAPSHOT.
+on:
+  workflow_dispatch:
+
+jobs:
+  info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain JitPack flow
+        run: |
+          echo "JitPack builds this repository directly from GitHub tags or branch snapshots."
+          echo "No GitHub Release is required for every commit."

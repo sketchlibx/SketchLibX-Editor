@@ -168,15 +168,15 @@ The search engine is kept in `com.sketchlibx.editor.util.EditorSearch`, so appli
 
 The project uses:
 
-- Android Gradle Plugin `8.7.3`
-- Gradle `8.9`
+- Android Gradle Plugin `8.9.1`
+- Gradle `8.11.1`
 - Java/JDK `17`
 - `compileSdk 36`
 - `minSdk 21`
 
-AGP `8.7.3` is paired with Gradle `8.9`. JitPack is configured for JDK 17. Sora Editor 0.24.6 supports API 21 as its final API-21 release.
+AGP `8.9.1` is paired with Gradle `8.11.1`. JitPack is configured for JDK 17. SketchLibX keeps `minSdk 21` by using AndroidX Fragment `1.8.9`; Fragment `1.9.x` requires API 23.
 
-From a machine with Android SDK 35 installed:
+From a machine with Android SDK 36 installed:
 
 ```bash
 gradle :editor:assembleRelease
@@ -189,7 +189,7 @@ The main AAR will be under:
 editor/build/outputs/aar/
 ```
 
-There is intentionally no GitHub Actions workflow in this repository. JitPack is the publishing/remote-build path for this library, so an extra workflow is not required for publishing.
+The repository includes a GitHub Actions build workflow for pull requests and pushes to `main`. It verifies the Android 36 toolchain, builds both the library and sample, and checks the Maven publication metadata. This workflow is separate from JitPack publishing.
 
 ## Publish through JitPack
 
