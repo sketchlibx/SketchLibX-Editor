@@ -9,7 +9,6 @@ import io.github.rosemoe.sora.langs.textmate.TextMateColorScheme;
 import io.github.rosemoe.sora.langs.textmate.TextMateLanguage;
 import io.github.rosemoe.sora.langs.textmate.registry.FileProviderRegistry;
 import io.github.rosemoe.sora.langs.textmate.registry.GrammarRegistry;
-import io.github.rosemoe.sora.langs.textmate.registry.model.ThemeModel;
 import io.github.rosemoe.sora.langs.textmate.registry.ThemeRegistry;
 import io.github.rosemoe.sora.langs.textmate.registry.provider.AssetsFileResolver;
 import io.github.rosemoe.sora.widget.CodeEditor;
@@ -69,9 +68,10 @@ public final class TextMateBootstrap {
                 return false;
             }
             IThemeSource source = IThemeSource.fromInputStream(input, assetPath, null);
-            ThemeModel model = new ThemeModel(source, name);
-            model.setDark(dark);
-            registry.loadTheme(model);
+            // Load through ThemeRegistry's stable IThemeSource API. This avoids coupling
+            // SketchLibX to ThemeModel's internal package and keeps compatibility with
+            // Sora Editor 0.24.6 where ThemeModel lives under registry.model.
+            registry.loadTheme(source, false);
             return true;
         } catch (Exception e) {
             Log.w(TAG, "Unable to load theme " + name, e);

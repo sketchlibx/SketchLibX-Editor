@@ -13,7 +13,7 @@ install:
     fi
     VERSION_VALUE="${VERSION#v}"
     if ! echo "$VERSION_VALUE" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$'; then
-      VERSION_VALUE=0.0.2
+      VERSION_VALUE=0.0.4
     fi
     echo "Building SketchLibX Editor version $VERSION_VALUE"
     gradle clean :editor:build :sample:assembleDebug :editor:publishReleasePublicationToMavenLocal -PSKETCHLIBX_VERSION="$VERSION_VALUE" --stacktrace

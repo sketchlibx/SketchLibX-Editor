@@ -62,6 +62,7 @@ public class SketchLibXEditorView extends LinearLayout {
     private boolean toolbarVisible = true;
     private float textSizeSp = 15f;
     private Listener listener;
+    private boolean released;
 
     public SketchLibXEditorView(Context context) {
         this(context, null);
@@ -213,7 +214,11 @@ public class SketchLibXEditorView extends LinearLayout {
 
     public void openSearch() { toggleSearch(true); }
     public void closeSearch() { toggleSearch(false); }
-    public void releaseEditor() { editor.release(); }
+    public void releaseEditor() {
+        if (released) return;
+        released = true;
+        editor.release();
+    }
 
     private void toggleSearch(boolean show) {
         searchBar.setVisibility(show ? VISIBLE : GONE);
