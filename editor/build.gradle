@@ -4,19 +4,19 @@ plugins {
 }
 
 def configuredGroup = System.getenv('GROUP') ?: 'com.sketchlibx.editor'
-def libraryVersion = findProperty('SKETCHLIBX_VERSION') ?: '0.0.5'
+def libraryVersion = findProperty('SKETCHLIBX_VERSION') ?: '0.0.6'
 
 group = configuredGroup
 version = libraryVersion
 
 android {
     namespace 'com.sketchlibx.editor'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         minSdk 21
-        targetSdk 35
-        versionCode 5
+        targetSdk 36
+        versionCode 6
         versionName libraryVersion
         buildConfigField 'String', 'VERSION_NAME', '"' + libraryVersion + '"'
         consumerProguardFiles 'consumer-rules.pro'

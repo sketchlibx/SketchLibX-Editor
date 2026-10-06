@@ -1,19 +1,23 @@
 jdk:
   - openjdk17
 
+before_install:
+  - sdk install gradle 8.11.1 || true
+  - sdk use gradle 8.11.1
+
 install:
   - |
     set -e
-    echo "Checking JitPack Gradle toolchain..."
+    echo "Checking SketchLibX Android toolchain..."
     gradle --version
-    ACTUAL_GRADLE=$(gradle --version | awk '/^Gradle / {print $2; exit}')
-    if [ "$ACTUAL_GRADLE" != "8.9" ]; then
-      echo "SketchLibX Editor requires Gradle 8.9 with AGP 8.7.3; JitPack reported $ACTUAL_GRADLE"
+    ACTUAL_GRADLE="$(gradle --version | awk '/^Gradle / {print $2; exit}')"
+    if [ "$ACTUAL_GRADLE" != "8.11.1" ]; then
+      echo "Expected Gradle 8.11.1, found $ACTUAL_GRADLE"
       exit 1
     fi
     VERSION_VALUE="${VERSION#v}"
     if ! echo "$VERSION_VALUE" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$'; then
-      VERSION_VALUE=0.0.5
+      VERSION_VALUE=0.0.6
     fi
     echo "Building SketchLibX Editor version $VERSION_VALUE"
     gradle clean :editor:build :sample:assembleDebug :editor:publishReleasePublicationToMavenLocal -PSKETCHLIBX_VERSION="$VERSION_VALUE" --stacktrace

@@ -171,7 +171,7 @@ The project uses:
 - Android Gradle Plugin `8.7.3`
 - Gradle `8.9`
 - Java/JDK `17`
-- `compileSdk 35`
+- `compileSdk 36`
 - `minSdk 21`
 
 AGP `8.7.3` is paired with Gradle `8.9`. JitPack is configured for JDK 17. Sora Editor 0.24.6 supports API 21 as its final API-21 release.
@@ -199,11 +199,11 @@ Push this repository to GitHub, for example:
 https://github.com/<YOUR_GITHUB_USERNAME>/SketchLibX-Editor
 ```
 
-Create a Git tag for this release, `v0.0.5`, and push it:
+Create a Git tag for this release, `v0.0.6`, and push it:
 
 ```bash
-git tag v0.0.5
-git push origin v0.0.5
+git tag v0.0.6
+git push origin v0.0.6
 ```
 
 After JitPack builds the tag, consuming apps can use:
@@ -214,7 +214,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.<YOUR_GITHUB_USERNAME>:sketchlibx-editor:v0.0.5")
+    implementation("com.github.<YOUR_GITHUB_USERNAME>:sketchlibx-editor:v0.0.6")
 }
 ```
 
@@ -222,7 +222,7 @@ For Maven Central, keep the existing `maven-publish` configuration and add your 
 
 ## Versioning
 
-The library version in this fixed build is `0.0.5`.
+The library version in this fixed build is `0.0.6`.
 
 Suggested release flow:
 
@@ -274,4 +274,48 @@ Those features can be layered on without changing the basic `SketchLibXEditorVie
 
 ## Build/publishing compatibility
 
-The fixed project uses Android Gradle Plugin 8.7.3 with Gradle 8.9 because that pairing is explicitly compatible. The Android library publication is configured inside `afterEvaluate`, which is required because AGP creates the Android `SoftwareComponent` during that lifecycle phase. JitPack uses JDK 17 through `jitpack.yml`.
+The project uses Android Gradle Plugin 8.9.1 with Gradle 8.11.1 because Android API 36 requires AGP 8.9.1 or newer. The Android library publication is configured inside `afterEvaluate`, which is required because AGP creates the Android `SoftwareComponent` during that lifecycle phase. JitPack uses JDK 17 through `jitpack.yml`.
+
+
+## Development snapshots
+
+You do not need to create a GitHub Release for every change. For development, JitPack supports branch snapshots. After pushing to `main`, consumers can use:
+
+```gradle
+implementation 'com.github.SketchLibX:sketchlibx-editor:main-SNAPSHOT'
+```
+
+Use a released tag such as `v0.0.6` for stable/production dependencies. JitPack documents branch snapshots as the development workflow; snapshots follow the latest commit on that branch.
+
+
+## Publishing workflow
+
+SketchLibX Editor uses JitPack for distribution. You do **not** need to create a GitHub Release for every commit.
+
+### Development builds
+
+Push changes to `main` and consume the latest development build with:
+
+```gradle
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.SketchLibX:sketchlibx-editor:main-SNAPSHOT'
+}
+```
+
+JitPack can rebuild branch snapshots from GitHub. A webhook can be enabled once in the repository so new commits trigger builds automatically. Do not use `main-SNAPSHOT` for production.
+
+### Stable builds
+
+For production, create a semantic Git tag such as `v0.0.6`. Tags are immutable/reproducible JitPack versions and should be used for released applications.
+
+## Build toolchain
+
+- Android Gradle Plugin: 8.9.1
+- Gradle: 8.11.1
+- JDK: 17
+- Compile SDK: 36
+- Minimum SDK: 21
