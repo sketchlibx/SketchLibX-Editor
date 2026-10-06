@@ -1,0 +1,52 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
+
+group = 'com.sketchlibx.editor'
+version = '0.1.0'
+
+android {
+    namespace 'com.sketchlibx.editor'
+    compileSdk 37
+    defaultConfig {
+        minSdk 21
+        targetSdk 37
+        versionCode 1
+        versionName '0.1.0'
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+    buildFeatures { buildConfig true }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    publishing {
+        singleVariant('release') { withSourcesJar(); withJavadocJar() }
+    }
+}
+
+dependencies {
+    api platform('io.github.rosemoe:editor-bom:0.24.6')
+    api 'io.github.rosemoe:editor'
+    implementation 'io.github.rosemoe:language-textmate'
+    api 'androidx.appcompat:appcompat:1.8.0'
+    api 'androidx.fragment:fragment:1.9.1'
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            from components.release
+            groupId = project.group
+            artifactId = 'sketchlibx-editor'
+            version = project.version
+            pom {
+                name = 'SketchLibX Editor'
+                description = 'Reusable advanced Android code/text editor component based on Sora Editor.'
+                url = 'https://github.com/YOUR_GITHUB_USERNAME/SketchLibX-Editor'
+                licenses { license { name = 'MIT License'; url = 'https://opensource.org/licenses/MIT' } }
+            }
+        }
+    }
+}

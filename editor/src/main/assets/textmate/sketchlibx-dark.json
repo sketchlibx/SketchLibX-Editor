@@ -1,0 +1,21 @@
+{
+  "name": "SketchLibX Dark",
+  "settings": [
+    {"settings": {"background": "#0F1116", "foreground": "#DCE3EE", "caret": "#FFFFFF", "selection": "#2A3854", "lineHighlight": "#171B23", "invisibles": "#3E4654"}},
+    {"scope": "comment", "settings": {"foreground": "#697586", "fontStyle": "italic"}},
+    {"scope": "string", "settings": {"foreground": "#A8D08D"}},
+    {"scope": "constant", "settings": {"foreground": "#E5C07B"}},
+    {"scope": "constant.numeric", "settings": {"foreground": "#D19A66"}},
+    {"scope": "keyword", "settings": {"foreground": "#C678DD"}},
+    {"scope": "storage", "settings": {"foreground": "#61AFEF", "fontStyle": "bold"}},
+    {"scope": "entity.name.function", "settings": {"foreground": "#61AFEF"}},
+    {"scope": "entity.name.type", "settings": {"foreground": "#E5C07B"}},
+    {"scope": "entity.name.tag", "settings": {"foreground": "#E06C75"}},
+    {"scope": "entity.other.attribute-name", "settings": {"foreground": "#D19A66"}},
+    {"scope": "markup.heading", "settings": {"foreground": "#7AA2F7", "fontStyle": "bold"}},
+    {"scope": "markup.bold", "settings": {"foreground": "#E5C07B", "fontStyle": "bold"}},
+    {"scope": "markup.italic", "settings": {"foreground": "#C678DD", "fontStyle": "italic"}},
+    {"scope": "support", "settings": {"foreground": "#56B6C2"}},
+    {"scope": "invalid", "settings": {"foreground": "#F44747"}}
+  ]
+}
