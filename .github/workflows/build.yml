@@ -15,25 +15,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK 36
-        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
-
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+          cache: gradle
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          # Do not request the deprecated `tools` SDK package.
+          # The current setup-android action provides sdkmanager via cmdline-tools.
+          packages: 'platform-tools'
+
+      - name: Install Android SDK 36
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
 
       - name: Setup Gradle 8.11.1
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
 
+      - name: Verify toolchain
+        run: |
+          java -version
+          sdkmanager --version
+          gradle --version
+
       - name: Build library and sample
-        run: gradle clean :editor:build :sample:assembleDebug
+        run: gradle --no-daemon clean :editor:build :sample:assembleDebug --stacktrace
 
       - name: Check Maven publication
-        run: gradle :editor:generatePomFileForReleasePublication
+        run: gradle --no-daemon :editor:generatePomFileForReleasePublication
