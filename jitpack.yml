@@ -11,4 +11,9 @@ install:
       echo "SketchLibX Editor requires Gradle 8.9 with AGP 8.7.3; JitPack reported $ACTUAL_GRADLE"
       exit 1
     fi
-    gradle clean :editor:build :sample:assembleDebug :editor:publishReleasePublicationToMavenLocal --stacktrace
+    VERSION_VALUE="${VERSION#v}"
+    if ! echo "$VERSION_VALUE" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$'; then
+      VERSION_VALUE=0.0.2
+    fi
+    echo "Building SketchLibX Editor version $VERSION_VALUE"
+    gradle clean :editor:build :sample:assembleDebug :editor:publishReleasePublicationToMavenLocal -PSKETCHLIBX_VERSION="$VERSION_VALUE" --stacktrace

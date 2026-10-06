@@ -199,11 +199,11 @@ Push this repository to GitHub, for example:
 https://github.com/<YOUR_GITHUB_USERNAME>/SketchLibX-Editor
 ```
 
-Create a Git tag such as `v0.1.0` and push it:
+Create a Git tag for this release, `v0.0.2`, and push it:
 
 ```bash
-git tag v0.1.0
-git push origin v0.1.0
+git tag v0.0.2
+git push origin v0.0.2
 ```
 
 After JitPack builds the tag, consuming apps can use:
@@ -214,7 +214,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.<YOUR_GITHUB_USERNAME>:SketchLibX-Editor:v0.1.1")
+    implementation("com.github.<YOUR_GITHUB_USERNAME>:sketchlibx-editor:v0.0.2")
 }
 ```
 
@@ -222,7 +222,7 @@ For Maven Central, keep the existing `maven-publish` configuration and add your 
 
 ## Versioning
 
-The library version in this fixed build is `0.1.1`.
+The library version in this fixed build is `0.0.2`.
 
 Suggested release flow:
 

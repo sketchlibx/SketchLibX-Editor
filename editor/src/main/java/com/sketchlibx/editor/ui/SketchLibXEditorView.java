@@ -322,6 +322,7 @@ public class SketchLibXEditorView extends LinearLayout {
     }
 
     private static LinearLayout.LayoutParams widthWrap(Context context) { return new LinearLayout.LayoutParams(dp(context, 50), dp(context, 34)); }
+    private int dp(int value) { return dp(getContext(), value); }
     private static int dp(Context c, int value) { return Math.round(value * c.getResources().getDisplayMetrics().density); }
 
     private abstract static class SimpleTextWatcher implements android.text.TextWatcher {
