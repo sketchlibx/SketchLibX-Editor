@@ -1,72 +1,62 @@
 # SketchLibX Editor
 
-A reusable, Android-first code and text editor component designed for apps that need a proper editor without embedding a whole IDE.
+A reusable Android code and text editor built around [Sora Editor](https://github.com/Rosemoe/sora-editor). It is designed for apps that need an editor without having to build the editing layer from scratch.
 
-Package: `com.sketchlibx.editor`
+## Features
 
-The project is intentionally split into two layers:
+- Syntax highlighting with TextMate support
+- Java, Kotlin, XML, C/C++, HTML, CSS, JavaScript, Markdown, JSON and other common text/code files
+- Automatic file/language detection
+- Undo/redo and automatic indentation
+- Search and replace with case-sensitive and regex modes
+- Word wrap and editor zoom controls
+- Light and dark editor themes
+- Ready-to-use View, Activity, Fragment and DialogFragment wrappers
+- Works with traditional Android Views and `AndroidView` in Compose
 
-- `SketchLibXEditorView` is the public reusable UI surface.
-- Sora Editor provides the low-level editing engine, while SketchLibX owns file detection, the toolbar, search/replace UI, theme handling, and host wrappers.
+## Requirements
 
-That means an app can use the editor as a normal custom `View`, or use the ready-made Activity, Fragment, or DialogFragment wrappers.
+- Android SDK 36
+- Minimum Android version: API 21
+- JDK 17
 
-## What is included
+## Installation
 
-### Editing
+SketchLibX Editor is distributed through JitPack.
 
-- Incremental syntax highlighting through TextMate
-- Auto-completion support from the underlying editor engine
-- Undo/redo support
-- Automatic indentation and editor navigation
-- Bracket pair highlighting and matching
-- Sticky-scroll, magnifier and diagnostic support from the engine
-- Physical keyboard shortcuts similar to modern desktop editors
-- Word wrapping
-- Non-printable character display
-- Monospace editor presentation
-- Zoom in, zoom out and reset zoom controls
-- Search and replace
-- Case-sensitive search
-- Regular-expression search
-- Replace-one and replace-all
-- Dark and light syntax themes
+```gradle
+repositories {
+    maven { url 'https://jitpack.io' }
+}
 
-Sora Editor documents incremental highlight, auto-completion, scale text, undo/redo, search/replace, word-wrap, diagnostics, magnifier, sticky scroll, bracket highlighting and TextMate/Tree-sitter language support. SketchLibX wraps those capabilities instead of reimplementing a large editor engine. See the upstream project and documentation for the underlying editor behavior.
-
-### File/language detection
-
-The built-in detector recognizes common source and configuration files including:
-
-`java`, `kt`, `kts`, `c`, `cpp`, `h`, `hpp`, `cs`, `py`, `js`, `mjs`, `ts`, `jsx`, `tsx`, `html`, `css`, `scss`, `less`, `xml`, `svg`, `json`, `yaml`, `yml`, `toml`, `md`, `sql`, `sh`, `bash`, `php`, `rb`, `go`, `rs`, `swift`, `dart`, `groovy`, `lua`, `pl`, `ini`, `properties`, `diff`, `patch`, `csv`, `gradle`, `Dockerfile`, `Makefile`, `txt`, and `log`.
-
-Unknown extensions are not rejected. They safely fall back to `Text / Code` mode, so the editor remains useful for custom formats, generated files, configuration files and project-specific extensions.
-
-The bundled TextMate grammar is deliberately lightweight and license-friendly: it provides broad language-agnostic highlighting for comments, strings, numbers, constants, keywords, operators, functions, XML/HTML tags and common Markdown markup. More precise grammars can be added later without changing the public SketchLibX API.
-
-## Public API
-
-The main classes live under:
-
-```text
-com.sketchlibx.editor
-com.sketchlibx.editor.core
-com.sketchlibx.editor.ui
-com.sketchlibx.editor.util
+dependencies {
+    implementation 'com.github.sketchlibx:SketchLibX-Editor:1.0.0-alpha1'
+}
 ```
 
-Most applications only need:
+For Kotlin DSL:
+
+```kotlin
+repositories {
+    maven { url = uri("https://jitpack.io") }
+}
+
+dependencies {
+    implementation("com.github.sketchlibx:SketchLibX-Editor:1.0.0-alpha1")
+}
+```
+
+## Basic usage
+
+The main reusable component is `SketchLibXEditorView`.
 
 ```java
 import com.sketchlibx.editor.ui.SketchLibXEditorView;
-```
 
-## Use as a normal custom View
-
-```java
 SketchLibXEditorView editor = new SketchLibXEditorView(this);
 editor.setFileName("MainActivity.java");
-editor.setText("public class MainActivity {\n    // edit here\n}\n");
+editor.setText("public class MainActivity {\n    \n}");
+
 setContentView(editor);
 ```
 
@@ -75,14 +65,14 @@ Release the editor with the host lifecycle:
 ```java
 @Override
 protected void onDestroy() {
-    if (editor != null) editor.releaseEditor();
+    if (editor != null) {
+        editor.releaseEditor();
+    }
     super.onDestroy();
 }
 ```
 
-## Use from XML
-
-`SketchLibXEditorView` has the normal `Context` + `AttributeSet` constructor, so it can also be inflated from XML:
+## XML
 
 ```xml
 <com.sketchlibx.editor.ui.SketchLibXEditorView
@@ -91,231 +81,42 @@ protected void onDestroy() {
     android:layout_height="match_parent" />
 ```
 
-Then configure it in Java/Kotlin:
+## Other integrations
 
-```java
-SketchLibXEditorView editor = findViewById(R.id.editor);
-editor.setFileName("README.md");
-editor.setText("# Hello\n\nThis is an editable Markdown file.");
-```
+Ready-made wrappers are available for common Android setups:
 
-## Use as a Fragment
+- `SketchLibXEditorActivity`
+- `SketchLibXEditorFragment`
+- `SketchLibXEditorDialogFragment`
+- `SketchLibXEditorView`
 
-```java
-SketchLibXEditorFragment fragment = SketchLibXEditorFragment.newInstance(
-        "settings.xml",
-        "<settings>\n    <item name=\"enabled\">true</item>\n</settings>"
-);
-getSupportFragmentManager()
-        .beginTransaction()
-        .replace(R.id.container, fragment)
-        .commit();
-```
+The editor is a normal Android `View`, so it can also be hosted with Compose using `AndroidView`.
 
-## Use as a DialogFragment
+## Search and replace
 
-```java
-SketchLibXEditorDialogFragment dialog = SketchLibXEditorDialogFragment.newInstance(
-        "snippet.cpp",
-        "#include <iostream>\n\nint main() { return 0; }"
-);
-dialog.show(getSupportFragmentManager(), "sketchlibx-editor");
-```
+The built-in editor supports:
 
-## Use the ready-made Activity
-
-Launch `SketchLibXEditorActivity` and pass:
-
-```java
-intent.putExtra(SketchLibXEditorActivity.EXTRA_FILE_NAME, "MainActivity.kt");
-intent.putExtra(SketchLibXEditorActivity.EXTRA_CONTENT, sourceText);
-```
-
-You can subclass `SketchLibXEditorActivity` when your application needs a custom save action, file picker, title handling or project integration.
-
-## Compose / AndroidView
-
-The editor remains a normal Android `View`, so it works with `AndroidView`:
-
-```kotlin
-AndroidView(
-    factory = { context ->
-        SketchLibXEditorView(context).apply {
-            setFileName("Example.kt")
-            setText("fun main() = println(\"Hello\")")
-        }
-    },
-    modifier = Modifier.fillMaxSize()
-)
-```
-
-This keeps Compose optional; the library itself does not require Compose.
-
-## Find and replace
-
-The built-in toolbar exposes:
-
-- Find previous / next
+- Find next / previous
 - Replace current match
 - Replace all
-- Case-sensitive mode
-- Regex mode
-- Live match count
+- Case-sensitive search
+- Regular-expression search
+- Match count
 
-The search engine is kept in `com.sketchlibx.editor.util.EditorSearch`, so applications can also reuse the search logic independently of the UI.
+Search utilities are also available through `com.sketchlibx.editor.util.EditorSearch`.
 
-## Build the library
+## How it works
 
-The project uses:
+SketchLibX Editor provides the public API and Android integration layer, while Sora Editor handles the core text-editing engine. This keeps the public API focused on application integration and allows the underlying editor engine to handle editing, highlighting and related editor features.
 
-- Android Gradle Plugin `8.13.2`
-- Gradle `8.13`
-- Java/JDK `17`
-- `compileSdk 36`
-- `minSdk 21`
+Sora Editor is an upstream dependency of this project. Its license and notices remain applicable; see `THIRD_PARTY_NOTICES.md`.
 
-AGP `8.13.2` is paired with Gradle `8.13`. JitPack is configured for JDK 17. SketchLibX keeps `minSdk 21` by using AndroidX Fragment `1.8.9`; Fragment `1.9.x` requires API 23.
+## Version
 
-From a machine with Android SDK 36 installed:
+**1.0.0-alpha1** — first alpha release.
 
-```bash
-gradle :editor:assembleRelease
-gradle :editor:testReleaseUnitTest
-```
+This is an early release, so public APIs may still change before the stable `1.0.0` release.
 
-The main AAR will be under:
+## License
 
-```text
-editor/build/outputs/aar/
-```
-
-The repository includes a GitHub Actions build workflow for pull requests and pushes to `main`. It verifies the Android 36 toolchain, builds both the library and sample, and checks the Maven publication metadata. This workflow is separate from JitPack publishing.
-
-## Publish through JitPack
-
-Push this repository to GitHub, for example:
-
-```text
-https://github.com/<YOUR_GITHUB_USERNAME>/SketchLibX-Editor
-```
-
-Create a Git tag for this release, `v0.0.6`, and push it:
-
-```bash
-git tag v0.0.6
-git push origin v0.0.6
-```
-
-After JitPack builds the tag, consuming apps can use:
-
-```kotlin
-repositories {
-    maven { url = uri("https://jitpack.io") }
-}
-
-dependencies {
-    implementation("com.github.<YOUR_GITHUB_USERNAME>:sketchlibx-editor:v0.0.6")
-}
-```
-
-For Maven Central, keep the existing `maven-publish` configuration and add your Sonatype signing/credential configuration in a private `~/.gradle/gradle.properties` or CI secret store. Do not commit credentials.
-
-## Versioning
-
-The library version in this fixed build is `0.0.6`.
-
-Suggested release flow:
-
-```text
-0.1.x  feature/fix releases
-0.2.x  API additions or a larger editor UI revision
-1.0.0  stable public API
-```
-
-The public SketchLibX classes are intentionally separated from Sora Editor implementation details. Host applications should avoid directly depending on Sora classes when they only need the SketchLibX API.
-
-## Performance notes
-
-Large files are still text buffers. Applications opening very large generated files should consider lazy loading or read-only mode instead of pushing an entire multi-megabyte/binary file into an editor widget.
-
-Binary data is not treated as a binary viewer. For files that are not valid text, use a dedicated hex/binary viewer and keep SketchLibX Editor for source/text content.
-
-## Third-party dependency and license
-
-SketchLibX's own source is intended to be MIT licensed.
-
-The editor engine is provided by the open-source Sora Editor project. Sora Editor is distributed under LGPL-2.1; its licensing and dependency notices continue to apply to that dependency. Do not remove upstream notices from redistributed dependency artifacts.
-
-See `THIRD_PARTY_NOTICES.md` for the dependency note. The bundled grammar is intentionally universal; file extensions are detected and exposed through the public API, while language-specific TextMate packs can be layered on later without changing the public view API.
-
-## Project layout
-
-```text
-SketchLibX-Editor/
-├── editor/
-│   └── src/main/
-│       ├── assets/sketchlibx_editor/textmate/
-│       └── java/com/sketchlibx/editor/
-│           ├── SketchLibXEditor.java
-│           ├── core/
-│           ├── ui/
-│           └── util/
-├── sample/
-├── build.gradle
-├── settings.gradle
-└── README.md
-```
-
-## Roadmap
-
-The current foundation is deliberately stable and reusable. Natural next additions are optional language-specific grammar packs, code folding/outline integrations, document sessions/tabs, LSP adapters, diagnostics providers, formatter hooks, diff mode, minimap and multi-cursor actions.
-
-Those features can be layered on without changing the basic `SketchLibXEditorView` integration model.
-
-## Build/publishing compatibility
-
-The project uses Android Gradle Plugin 8.13.2 with Gradle 8.13. This AGP version is intentional: Sora Editor 0.24.6 and its TextMate module use Kotlin 2.3 metadata, and AGP 8.13.2 ships R8 8.13.19 with Kotlin 2.3 support. The Android library publication is configured inside `afterEvaluate`, which is required because AGP creates the Android `SoftwareComponent` during that lifecycle phase. JitPack uses JDK 17 through `jitpack.yml`.
-
-
-## Development snapshots
-
-You do not need to create a GitHub Release for every change. For development, JitPack supports branch snapshots. After pushing to `main`, consumers can use:
-
-```gradle
-implementation 'com.github.SketchLibX:sketchlibx-editor:main-SNAPSHOT'
-```
-
-Use a released tag such as `v0.0.6` for stable/production dependencies. JitPack documents branch snapshots as the development workflow; snapshots follow the latest commit on that branch.
-
-
-## Publishing workflow
-
-SketchLibX Editor uses JitPack for distribution. You do **not** need to create a GitHub Release for every commit.
-
-### Development builds
-
-Push changes to `main` and consume the latest development build with:
-
-```gradle
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-
-dependencies {
-    implementation 'com.github.SketchLibX:sketchlibx-editor:main-SNAPSHOT'
-}
-```
-
-JitPack can rebuild branch snapshots from GitHub. A webhook can be enabled once in the repository so new commits trigger builds automatically. Do not use `main-SNAPSHOT` for production.
-
-### Stable builds
-
-For production, create a semantic Git tag such as `v0.0.6`. Tags are immutable/reproducible JitPack versions and should be used for released applications.
-
-## Build toolchain
-
-- Android Gradle Plugin: 8.13.2
-- Gradle: 8.13
-- JDK: 17
-- Compile SDK: 36
-- Minimum SDK: 21
+SketchLibX Editor is released under the MIT License. See `LICENSE` for details.
