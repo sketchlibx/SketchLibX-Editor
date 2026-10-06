@@ -168,13 +168,13 @@ The search engine is kept in `com.sketchlibx.editor.util.EditorSearch`, so appli
 
 The project uses:
 
-- Android Gradle Plugin `8.9.1`
-- Gradle `8.11.1`
+- Android Gradle Plugin `8.13.2`
+- Gradle `8.13`
 - Java/JDK `17`
 - `compileSdk 36`
 - `minSdk 21`
 
-AGP `8.9.1` is paired with Gradle `8.11.1`. JitPack is configured for JDK 17. SketchLibX keeps `minSdk 21` by using AndroidX Fragment `1.8.9`; Fragment `1.9.x` requires API 23.
+AGP `8.13.2` is paired with Gradle `8.13`. JitPack is configured for JDK 17. SketchLibX keeps `minSdk 21` by using AndroidX Fragment `1.8.9`; Fragment `1.9.x` requires API 23.
 
 From a machine with Android SDK 36 installed:
 
@@ -274,7 +274,7 @@ Those features can be layered on without changing the basic `SketchLibXEditorVie
 
 ## Build/publishing compatibility
 
-The project uses Android Gradle Plugin 8.9.1 with Gradle 8.11.1 because Android API 36 requires AGP 8.9.1 or newer. The Android library publication is configured inside `afterEvaluate`, which is required because AGP creates the Android `SoftwareComponent` during that lifecycle phase. JitPack uses JDK 17 through `jitpack.yml`.
+The project uses Android Gradle Plugin 8.13.2 with Gradle 8.13. This AGP version is intentional: Sora Editor 0.24.6 and its TextMate module use Kotlin 2.3 metadata, and AGP 8.13.2 ships R8 8.13.19 with Kotlin 2.3 support. The Android library publication is configured inside `afterEvaluate`, which is required because AGP creates the Android `SoftwareComponent` during that lifecycle phase. JitPack uses JDK 17 through `jitpack.yml`.
 
 
 ## Development snapshots
@@ -314,8 +314,8 @@ For production, create a semantic Git tag such as `v0.0.6`. Tags are immutable/r
 
 ## Build toolchain
 
-- Android Gradle Plugin: 8.9.1
-- Gradle: 8.11.1
+- Android Gradle Plugin: 8.13.2
+- Gradle: 8.13
 - JDK: 17
 - Compile SDK: 36
 - Minimum SDK: 21

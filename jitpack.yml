@@ -2,8 +2,8 @@ jdk:
   - openjdk17
 
 before_install:
-  - sdk install gradle 8.11.1 || true
-  - sdk use gradle 8.11.1
+  - sdk install gradle 8.13 || true
+  - sdk use gradle 8.13
 
 install:
   - |
@@ -11,8 +11,8 @@ install:
     echo "Checking SketchLibX Android toolchain..."
     gradle --version
     ACTUAL_GRADLE="$(gradle --version | awk '/^Gradle / {print $2; exit}')"
-    if [ "$ACTUAL_GRADLE" != "8.11.1" ]; then
-      echo "Expected Gradle 8.11.1, found $ACTUAL_GRADLE"
+    if [ "$ACTUAL_GRADLE" != "8.13" ]; then
+      echo "Expected Gradle 8.13, found $ACTUAL_GRADLE"
       exit 1
     fi
     VERSION_VALUE="${VERSION#v}"
