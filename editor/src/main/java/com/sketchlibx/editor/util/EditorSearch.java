@@ -17,31 +17,33 @@ public final class EditorSearch {
     public static List<Match> findAll(String text, String query, boolean caseSensitive, boolean regex) {
         List<Match> result = new ArrayList<>();
         if (text == null || query == null || query.isEmpty()) return result;
-        int flags = caseSensitive ? 0 : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
-        Pattern p;
+        int flags = Pattern.MULTILINE | (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
         try {
-            p = Pattern.compile(regex ? query : Pattern.quote(query), flags);
-        } catch (RuntimeException badPattern) {
-            return result;
-        }
-        Matcher matcher = p.matcher(text);
-        while (matcher.find()) {
-            if (matcher.end() == matcher.start()) {
-                if (matcher.start() < text.length()) result.add(new Match(matcher.start(), matcher.start() + 1));
-            } else {
-                result.add(new Match(matcher.start(), matcher.end()));
+            Pattern pattern = Pattern.compile(regex ? query : Pattern.quote(query), flags);
+            Matcher matcher = pattern.matcher(text);
+            while (matcher.find()) {
+                // Zero-width matches cannot select a real editor range; skip them safely.
+                if (matcher.end() > matcher.start()) {
+                    result.add(new Match(matcher.start(), matcher.end()));
+                }
             }
+        } catch (RuntimeException ignored) {
+            // Invalid regex patterns are treated as no matches instead of crashing the editor.
         }
         return result;
     }
 
     public static String replaceAll(String text, String query, String replacement, boolean caseSensitive, boolean regex) {
         if (text == null || query == null || query.isEmpty()) return text;
-        int flags = caseSensitive ? 0 : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
+        int flags = Pattern.MULTILINE | (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
         try {
-            Pattern p = Pattern.compile(regex ? query : Pattern.quote(query), flags);
-            Matcher m = p.matcher(text);
-            return m.replaceAll(Matcher.quoteReplacement(replacement == null ? "" : replacement));
+            Pattern pattern = Pattern.compile(regex ? query : Pattern.quote(query), flags);
+            Matcher matcher = pattern.matcher(text);
+            if (regex) {
+                // Preserve normal Java regex replacement semantics, including $1 and \1 groups.
+                return matcher.replaceAll(replacement == null ? "" : replacement);
+            }
+            return matcher.replaceAll(Matcher.quoteReplacement(replacement == null ? "" : replacement));
         } catch (RuntimeException ignored) {
             return text;
         }

@@ -1,10 +1,10 @@
+*.apk
+*.aab
+*.aar
+*.class
+build/
 .gradle/
 .idea/
-*.iml
 local.properties
+*.iml
 .DS_Store
-build/
-**/build/
-.externalNativeBuild/
-.cxx/
-.kotlin/

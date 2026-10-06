@@ -1,7 +1,7 @@
 {
   "languages": [
     {
-      "grammar": "textmate/sketchlibx-universal.tmLanguage.json",
+      "grammar": "sketchlibx_editor/textmate/sketchlibx-universal.tmLanguage.json",
       "name": "sketchlibx",
       "scopeName": "source.sketchlibx"
     }

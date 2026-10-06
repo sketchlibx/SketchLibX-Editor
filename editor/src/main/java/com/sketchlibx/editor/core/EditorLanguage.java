@@ -25,25 +25,42 @@ public enum EditorLanguage {
 
     public String getDisplayName() { return displayName; }
 
+    /**
+     * The bundled grammar is intentionally universal. Language detection still gives the
+     * host app a stable language identity and can later be paired with a registered grammar pack.
+     */
+    public String getTextMateScope() {
+        return "source.sketchlibx";
+    }
+
     public static EditorLanguage fromFileName(String fileName) {
         if (fileName == null) return PLAIN_TEXT;
-        String name = fileName.trim().toLowerCase(Locale.ROOT);
+        String name = fileName.trim().toLowerCase(Locale.ROOT).replace('\\', '/');
         if (name.isEmpty()) return PLAIN_TEXT;
-        if (name.endsWith("/dockerfile") || name.equals("dockerfile")) return DOCKERFILE;
-        if (name.endsWith("/makefile") || name.equals("makefile")) return MAKEFILE;
+
+        String base = name.substring(name.lastIndexOf('/') + 1);
+        if (base.equals("dockerfile") || base.endsWith(".dockerfile")) return DOCKERFILE;
+        if (base.equals("makefile") || base.equals("gnumakefile")) return MAKEFILE;
+        if (base.equals("cmakelists.txt") || base.equals("meson.build") || base.equals("build.gradle") || base.equals("settings.gradle")) return GRADLE;
+        if (base.equals(".editorconfig") || base.equals(".gitignore") || base.equals(".gitattributes") || base.equals(".gitmodules")) return INI;
+        if (base.equals("gemfile") || base.equals("rakefile")) return RUBY;
+        if (base.equals("podfile")) return SWIFT;
+        if (base.equals("requirements.txt") || base.equals("pipfile")) return PLAIN_TEXT;
+
         if (name.endsWith(".java")) return JAVA;
+        if (name.endsWith(".gradle.kts") || name.endsWith(".gradle")) return GRADLE;
         if (name.endsWith(".kt")) return KOTLIN;
         if (name.endsWith(".kts")) return KTS;
-        if (name.endsWith(".c")) return C;
-        if (name.endsWith(".cc") || name.endsWith(".cpp") || name.endsWith(".cxx") || name.endsWith(".c++")) return CPP;
-        if (name.endsWith(".h") || name.endsWith(".hh") || name.endsWith(".hpp") || name.endsWith(".hxx")) return HEADER;
+        if (name.endsWith(".c") || name.endsWith(".i")) return C;
+        if (name.endsWith(".cc") || name.endsWith(".cpp") || name.endsWith(".cxx") || name.endsWith(".c++") || name.endsWith(".ipp")) return CPP;
+        if (name.endsWith(".h") || name.endsWith(".hh") || name.endsWith(".hpp") || name.endsWith(".hxx") || name.endsWith(".h++")) return HEADER;
         if (name.endsWith(".cs")) return CSHARP;
-        if (name.endsWith(".py") || name.endsWith(".pyw")) return PYTHON;
+        if (name.endsWith(".py") || name.endsWith(".pyw") || name.endsWith(".pyi")) return PYTHON;
         if (name.endsWith(".js") || name.endsWith(".mjs") || name.endsWith(".cjs")) return JAVASCRIPT;
         if (name.endsWith(".ts")) return TYPESCRIPT;
         if (name.endsWith(".jsx")) return JSX;
         if (name.endsWith(".tsx")) return TSX;
-        if (name.endsWith(".html") || name.endsWith(".htm") || name.endsWith(".xhtml")) return HTML;
+        if (name.endsWith(".html") || name.endsWith(".htm") || name.endsWith(".xhtml") || name.endsWith(".vue")) return HTML;
         if (name.endsWith(".css")) return CSS;
         if (name.endsWith(".scss")) return SCSS;
         if (name.endsWith(".less")) return LESS;
@@ -67,8 +84,7 @@ public enum EditorLanguage {
         if (name.endsWith(".ini") || name.endsWith(".cfg") || name.endsWith(".conf") || name.endsWith(".properties")) return INI;
         if (name.endsWith(".diff") || name.endsWith(".patch")) return DIFF;
         if (name.endsWith(".csv")) return CSV;
-        if (name.endsWith(".gradle")) return GRADLE;
-        if (name.endsWith(".txt") || name.endsWith(".log")) return PLAIN_TEXT;
+        if (name.endsWith(".txt") || name.endsWith(".log") || name.endsWith(".out")) return PLAIN_TEXT;
         return UNKNOWN;
     }
 }

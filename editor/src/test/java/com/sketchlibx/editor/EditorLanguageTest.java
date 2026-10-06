@@ -15,4 +15,11 @@ public class EditorLanguageTest {
         assertEquals(EditorLanguage.CPP, EditorLanguage.fromFileName("native.cpp"));
         assertEquals(EditorLanguage.HEADER, EditorLanguage.fromFileName("native.h"));
     }
+
+    @Test public void detectsPathAndCommonProjectFiles() {
+        assertEquals(EditorLanguage.JAVA, EditorLanguage.fromFileName("C:\\src\\MainActivity.java"));
+        assertEquals(EditorLanguage.DOCKERFILE, EditorLanguage.fromFileName("/workspace/Dockerfile"));
+        assertEquals(EditorLanguage.MAKEFILE, EditorLanguage.fromFileName("Makefile"));
+        assertEquals(EditorLanguage.INI, EditorLanguage.fromFileName(".editorconfig"));
+    }
 }

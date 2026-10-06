@@ -1,25 +1,28 @@
 package com.sketchlibx.editor.core;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.github.rosemoe.sora.langs.textmate.TextMateColorScheme;
 import io.github.rosemoe.sora.langs.textmate.TextMateLanguage;
+import io.github.rosemoe.sora.langs.textmate.registry.FileProviderRegistry;
 import io.github.rosemoe.sora.langs.textmate.registry.GrammarRegistry;
 import io.github.rosemoe.sora.langs.textmate.registry.ThemeModel;
 import io.github.rosemoe.sora.langs.textmate.registry.ThemeRegistry;
-import io.github.rosemoe.sora.widget.CodeEditor;
-import io.github.rosemoe.sora.langs.textmate.registry.FileProviderRegistry;
 import io.github.rosemoe.sora.langs.textmate.registry.provider.AssetsFileResolver;
+import io.github.rosemoe.sora.widget.CodeEditor;
 import org.eclipse.tm4e.core.registry.IThemeSource;
 
-/** One-time TextMate setup owned by the SketchLibX library. */
+/** One-time TextMate setup owned by SketchLibX. */
 public final class TextMateBootstrap {
+    private static final String TAG = "SketchLibXTextMate";
     private static final AtomicBoolean INITIALIZED = new AtomicBoolean(false);
     private static final String SCOPE = "source.sketchlibx";
     private static final String THEME_DARK = "sketchlibx-dark";
     private static final String THEME_LIGHT = "sketchlibx-light";
+    private static final String ASSET_ROOT = "sketchlibx_editor/textmate/";
 
     private TextMateBootstrap() { }
 
@@ -30,10 +33,14 @@ public final class TextMateBootstrap {
             Context app = context.getApplicationContext();
             FileProviderRegistry.getInstance().addFileProvider(new AssetsFileResolver(app.getAssets()));
             ThemeRegistry themeRegistry = ThemeRegistry.getInstance();
-            loadTheme(themeRegistry, THEME_DARK, "textmate/sketchlibx-dark.json", true);
-            loadTheme(themeRegistry, THEME_LIGHT, "textmate/sketchlibx-light.json", false);
+            loadTheme(themeRegistry, THEME_DARK, ASSET_ROOT + "sketchlibx-dark.json", true);
+            loadTheme(themeRegistry, THEME_LIGHT, ASSET_ROOT + "sketchlibx-light.json", false);
             themeRegistry.setTheme(THEME_DARK);
-            GrammarRegistry.getInstance().loadGrammars("textmate/languages.json");
+            try {
+                GrammarRegistry.getInstance().loadGrammars(ASSET_ROOT + "languages.json");
+            } catch (Exception e) {
+                Log.w(TAG, "Unable to load bundled TextMate grammar; editor will fall back gracefully", e);
+            }
             INITIALIZED.set(true);
         }
     }
@@ -48,8 +55,8 @@ public final class TextMateBootstrap {
             ThemeModel model = new ThemeModel(source, name);
             model.setDark(dark);
             registry.loadTheme(model);
-        } catch (Exception ignored) {
-            // A built-in editor color scheme still keeps the editor usable if a theme fails to load.
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to load theme " + name, e);
         }
     }
 

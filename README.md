@@ -119,7 +119,7 @@ SketchLibXEditorDialogFragment dialog = SketchLibXEditorDialogFragment.newInstan
         "snippet.cpp",
         "#include <iostream>\n\nint main() { return 0; }"
 );
-dialog.show(getSupportFragmentManager(), "sks-editor");
+dialog.show(getSupportFragmentManager(), "sketchlibx-editor");
 ```
 
 ## Use the ready-made Activity
@@ -169,17 +169,18 @@ The search engine is kept in `com.sketchlibx.editor.util.EditorSearch`, so appli
 The project uses:
 
 - Android Gradle Plugin `8.7.3`
-- Gradle `9.6`
+- Gradle `8.9`
 - Java/JDK `17`
 - `compileSdk 35`
 - `minSdk 21`
 
-Android 17 is API level 37, and AGP 9.4 supports compiling against API 37. The Sora Editor project itself requires JDK 17+ and Java 17 source/target compatibility.
+AGP `8.7.3` is paired with Gradle `8.9`. JitPack is configured for JDK 17. Sora Editor 0.24.6 supports API 21 as its final API-21 release.
 
-From a machine with Android SDK 37 installed:
+From a machine with Android SDK 35 installed:
 
 ```bash
 gradle :editor:assembleRelease
+gradle :editor:testReleaseUnitTest
 ```
 
 The main AAR will be under:
@@ -188,14 +189,14 @@ The main AAR will be under:
 editor/build/outputs/aar/
 ```
 
-For CI, this repository includes a GitHub Actions workflow that provisions JDK 17 and Gradle 9.6, then builds the release AAR and publication metadata.
+There is intentionally no GitHub Actions workflow in this repository. JitPack is the publishing/remote-build path for this library, so an extra workflow is not required for publishing.
 
 ## Publish through JitPack
 
 Push this repository to GitHub, for example:
 
 ```text
-https://github.com/YOUR_GITHUB_USERNAME/SketchLibX-Editor
+https://github.com/<YOUR_GITHUB_USERNAME>/SketchLibX-Editor
 ```
 
 Create a Git tag such as `v0.1.0` and push it:
@@ -213,7 +214,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.YOUR_GITHUB_USERNAME:SketchLibX-Editor:v0.1.0")
+    implementation("com.github.<YOUR_GITHUB_USERNAME>:SketchLibX-Editor:v0.1.1")
 }
 ```
 
@@ -221,7 +222,7 @@ For Maven Central, keep the existing `maven-publish` configuration and add your 
 
 ## Versioning
 
-The library starts at `0.1.0`.
+The library version in this fixed build is `0.1.1`.
 
 Suggested release flow:
 
@@ -245,7 +246,7 @@ SketchLibX's own source is intended to be MIT licensed.
 
 The editor engine is provided by the open-source Sora Editor project. Sora Editor is distributed under LGPL-2.1; its licensing and dependency notices continue to apply to that dependency. Do not remove upstream notices from redistributed dependency artifacts.
 
-See `THIRD_PARTY_NOTICES.md` for the dependency note.
+See `THIRD_PARTY_NOTICES.md` for the dependency note. The bundled grammar is intentionally universal; file extensions are detected and exposed through the public API, while language-specific TextMate packs can be layered on later without changing the public view API.
 
 ## Project layout
 
@@ -253,14 +254,13 @@ See `THIRD_PARTY_NOTICES.md` for the dependency note.
 SketchLibX-Editor/
 ├── editor/
 │   └── src/main/
-│       ├── assets/textmate/
+│       ├── assets/sketchlibx_editor/textmate/
 │       └── java/com/sketchlibx/editor/
 │           ├── SketchLibXEditor.java
 │           ├── core/
 │           ├── ui/
 │           └── util/
 ├── sample/
-├── .github/workflows/
 ├── build.gradle
 ├── settings.gradle
 └── README.md
@@ -271,3 +271,7 @@ SketchLibX-Editor/
 The current foundation is deliberately stable and reusable. Natural next additions are optional language-specific grammar packs, code folding/outline integrations, document sessions/tabs, LSP adapters, diagnostics providers, formatter hooks, diff mode, minimap and multi-cursor actions.
 
 Those features can be layered on without changing the basic `SketchLibXEditorView` integration model.
+
+## Build/publishing compatibility
+
+The fixed project uses Android Gradle Plugin 8.7.3 with Gradle 8.9 because that pairing is explicitly compatible. The Android library publication is configured inside `afterEvaluate`, which is required because AGP creates the Android `SoftwareComponent` during that lifecycle phase. JitPack uses JDK 17 through `jitpack.yml`.
