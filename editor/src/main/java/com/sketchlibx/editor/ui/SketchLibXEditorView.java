@@ -74,6 +74,21 @@ public class SketchLibXEditorView extends LinearLayout {
         setBackgroundColor(BG);
         TextMateBootstrap.initialize(context);
 
+        // Create the editor before any toolbar listeners capture the final field.
+        // Java requires a final field to be definitely assigned before it can be
+        // referenced from a lambda created in the constructor.
+        editor = new CodeEditor(context);
+        editor.setTypefaceText(Typeface.MONOSPACE);
+        editor.setTextSize(textSizeSp);
+        editor.setUndoEnabled(true);
+        editor.setNonPrintablePaintingFlags(
+                CodeEditor.FLAG_DRAW_WHITESPACE_LEADING |
+                CodeEditor.FLAG_DRAW_LINE_SEPARATOR |
+                CodeEditor.FLAG_DRAW_WHITESPACE_IN_SELECTION
+        );
+        editor.setWordwrap(false);
+        TextMateBootstrap.applyTheme(editor, true);
+
         topBar = new LinearLayout(context);
         topBar.setOrientation(HORIZONTAL);
         topBar.setGravity(Gravity.CENTER_VERTICAL);
@@ -130,8 +145,16 @@ public class SketchLibXEditorView extends LinearLayout {
         searchBar.addView(action(context, "↓", v -> findNext()), widthWrap(context));
         searchBar.addView(action(context, "One", v -> replaceCurrent()), widthWrap(context));
         searchBar.addView(action(context, "All", v -> replaceAllMatches()), widthWrap(context));
-        caseButton = action(context, "Aa", v -> { caseSensitive = !caseSensitive; styleToggle(caseButton, caseSensitive); refreshMatchCount(); });
-        regexButton = action(context, ".*", v -> { regex = !regex; styleToggle(regexButton, regex); refreshMatchCount(); });
+        caseButton = action(context, "Aa", v -> {
+            caseSensitive = !caseSensitive;
+            styleToggle((TextView) v, caseSensitive);
+            refreshMatchCount();
+        });
+        regexButton = action(context, ".*", v -> {
+            regex = !regex;
+            styleToggle((TextView) v, regex);
+            refreshMatchCount();
+        });
         searchBar.addView(caseButton, widthWrap(context));
         searchBar.addView(regexButton, widthWrap(context));
         matchInfo = label(context, "0", 11, MUTED, false);
@@ -139,17 +162,6 @@ public class SketchLibXEditorView extends LinearLayout {
         searchBar.addView(matchInfo, new LinearLayout.LayoutParams(dp(56), -1));
         searchBar.addView(action(context, "×", v -> toggleSearch(false)), widthWrap(context));
 
-        editor = new CodeEditor(context);
-        editor.setTypefaceText(Typeface.MONOSPACE);
-        editor.setTextSize(textSizeSp);
-        editor.setUndoEnabled(true);
-        editor.setNonPrintablePaintingFlags(
-                CodeEditor.FLAG_DRAW_WHITESPACE_LEADING |
-                CodeEditor.FLAG_DRAW_LINE_SEPARATOR |
-                CodeEditor.FLAG_DRAW_WHITESPACE_IN_SELECTION
-        );
-        editor.setWordwrap(false);
-        TextMateBootstrap.applyTheme(editor, true);
         addView(editor, new LayoutParams(-1, 0, 1f));
 
         editor.subscribeAlways(ContentChangeEvent.class, event -> {
