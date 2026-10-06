@@ -1,0 +1,10 @@
+# JitPack builds directly from GitHub tags and branch snapshots.
+# This workflow file is intentionally informational; it does not publish releases.
+#
+# Stable version:
+#   Tag the repository, for example: v0.0.6
+#
+# Development snapshot:
+#   Use main-SNAPSHOT from JitPack while developing.
+#
+# See README.md and jitpack.yml for the repository's build configuration.
